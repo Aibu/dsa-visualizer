@@ -21,7 +21,16 @@ The two versions cannot quietly drift apart. The tests run both against the same
 | Sorting | Quick sort | O(n log n) | O(log n) |
 | Graph search | Breadth first search | O(V + E) | O(V) |
 
-More are on the way: bubble, insertion, merge and heap sort, binary search, depth first search, Dijkstra, and the classic structures (stack, queue, linked list, binary search tree, heap, hash table).
+| Structure | Operations you can run |
+| --- | --- |
+| Stack | push, pop, peek |
+| Queue | enqueue, dequeue, including the compaction that keeps dequeue O(1) on average |
+| Linked list | prepend, append, find, remove |
+| Binary search tree | insert, search, walk in order |
+
+On the structures tab you pick an operation and a value, and watch it run against whatever is already there, so you can build up a tree yourself and see why sorted input turns it into a list.
+
+More are on the way: bubble, insertion, merge and heap sort, binary search, depth first search, Dijkstra, a heap and a hash table.
 
 ## Running it
 
@@ -41,7 +50,7 @@ npm test
 
 ## Adding an algorithm
 
-Write the plain version first, as `name.example.ts`, and mark the interesting lines with `// @step name`. Then write the generator in `name.ts` that yields a step for each marked line, with a short message. Both go in `src/algorithms/sorting` or `src/algorithms/graphs`. Finally add one entry to the `index.ts` in that folder. It shows up in the dropdown, and the existing test suite runs against it automatically, because the tests loop over the whole registry.
+Write the plain version first, as `name.example.ts`, and mark the interesting lines with `// @step name`. Then write the generator in `name.ts` that yields a step for each marked line, with a short message. Both go in `src/algorithms/sorting` or `src/algorithms/graphs`. Finally add one entry to the `index.ts` in that folder. A structure works the same way, in `src/structures`, with one generator per operation. It shows up in the dropdown, and the existing test suite runs against it automatically, because the tests loop over the whole registry.
 
 ## Layout
 
@@ -52,5 +61,6 @@ src/
     source.ts    reads the // @step markers out of an example file
     sorting/     plain examples, generators and tests
     graphs/      plain examples, generators and tests
+  structures/    plain classes, animated operations and tests
   visualizers/   React components that replay the steps
 ```

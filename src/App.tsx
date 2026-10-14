@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { GridVisualizer } from './visualizers/GridVisualizer';
 import { SortVisualizer } from './visualizers/SortVisualizer';
+import { StructureVisualizer } from './visualizers/structures/StructureVisualizer';
 
 const tabs = [
   { id: 'sorting', label: 'Sorting', Component: SortVisualizer },
   { id: 'graphs', label: 'Graph search', Component: GridVisualizer },
+  { id: 'structures', label: 'Data structures', Component: StructureVisualizer },
 ] as const;
 
 export function App() {
