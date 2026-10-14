@@ -1,15 +1,23 @@
 import { useEffect, useState } from 'react';
 
-/** Playback controls over a precomputed list of steps. */
-export function usePlayer<T>(steps: T[], speedMs: number) {
+/**
+ * Playback controls over a precomputed list of steps. With `autoPlay`, new
+ * steps start playing straight away instead of waiting on the Play button.
+ */
+export function usePlayer<T>(steps: T[], speedMs: number, autoPlay = false) {
   const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(autoPlay && steps.length > 1);
+  const [seen, setSeen] = useState(steps);
 
-  // New steps (new input or new algorithm) means start over.
-  useEffect(() => {
+  // New steps (new input or new algorithm) means start over. This happens
+  // during render rather than in an effect, so there is never a frame where
+  // the old index points past the end of a shorter list.
+  if (steps !== seen) {
+    setSeen(steps);
     setIndex(0);
-    setPlaying(false);
-  }, [steps]);
+    setPlaying(autoPlay && steps.length > 1);
+  }
+  const current = Math.min(index, steps.length - 1);
 
   useEffect(() => {
     if (!playing) return;
@@ -25,11 +33,11 @@ export function usePlayer<T>(steps: T[], speedMs: number) {
     return () => clearInterval(id);
   }, [playing, speedMs, steps.length]);
 
-  const atEnd = index >= steps.length - 1;
+  const atEnd = current >= steps.length - 1;
 
   return {
-    step: steps[index],
-    index,
+    step: steps[current],
+    index: current,
     total: steps.length,
     playing,
     atEnd,

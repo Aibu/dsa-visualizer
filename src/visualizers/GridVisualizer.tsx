@@ -21,7 +21,7 @@ function randomWalls(): Set<number> {
 export function GridVisualizer() {
   const [algorithmId, setAlgorithmId] = useState(graphAlgorithms[0].id);
   const [walls, setWalls] = useState(randomWalls);
-  const [speed, setSpeed] = useState(30);
+  const [speed, setSpeed] = useState(150);
 
   const algorithm = graphAlgorithms.find((a) => a.id === algorithmId)!;
   const steps = useMemo(() => {

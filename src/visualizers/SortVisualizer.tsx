@@ -10,7 +10,7 @@ const randomArray = () => Array.from({ length: SIZE }, () => 5 + Math.floor(Math
 export function SortVisualizer() {
   const [algorithmId, setAlgorithmId] = useState(sortingAlgorithms[0].id);
   const [input, setInput] = useState(randomArray);
-  const [speed, setSpeed] = useState(60);
+  const [speed, setSpeed] = useState(400);
 
   const algorithm = sortingAlgorithms.find((a) => a.id === algorithmId)!;
   const steps = useMemo(() => [...algorithm.run(input)], [algorithm, input]);

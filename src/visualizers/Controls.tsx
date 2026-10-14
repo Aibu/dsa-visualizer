@@ -7,6 +7,15 @@ interface Props {
   onSpeed: (ms: number) => void;
 }
 
+// The slider is logarithmic: equal moves feel like equal changes in pace, and
+// the slow end gets enough room to stop on "slow enough to read".
+const SLOWEST_MS = 4000;
+const FASTEST_MS = 10;
+const RATIO = Math.log(FASTEST_MS / SLOWEST_MS);
+const toSlider = (ms: number) => Math.round((100 * Math.log(ms / SLOWEST_MS)) / RATIO);
+const toMs = (position: number) => Math.round(SLOWEST_MS * Math.exp((RATIO * position) / 100));
+const describe = (ms: number) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : `${ms} ms`) + ' per step';
+
 export function PlaybackControls({ player, speed, onSpeed }: Props) {
   return (
     <div className="controls">
@@ -23,11 +32,13 @@ export function PlaybackControls({ player, speed, onSpeed }: Props) {
         Speed
         <input
           type="range"
-          min={5}
-          max={400}
-          value={405 - speed}
-          onChange={(e) => onSpeed(405 - Number(e.target.value))}
+          min={0}
+          max={100}
+          value={toSlider(speed)}
+          onChange={(e) => onSpeed(toMs(Number(e.target.value)))}
+          aria-valuetext={describe(speed)}
         />
+        <span className="speed-value">{describe(speed)}</span>
       </label>
       <span className="counter">
         Step {player.index + 1} / {player.total}
