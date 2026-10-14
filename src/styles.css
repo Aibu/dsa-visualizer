@@ -14,6 +14,10 @@
   --frontier: #7fa6f0;
   --path: #f2c94c;
   --wall: #2b2b30;
+  --code-bg: #fbfbfa;
+  --code-active: #e3ebfc;
+  --tok-keyword: #a2367a;
+  --tok-literal: #1f7a4d;
   color-scheme: light dark;
 }
 
@@ -28,6 +32,10 @@
     --visited: #22345a;
     --frontier: #3d63b0;
     --wall: #d0d0d6;
+    --code-bg: #18181b;
+    --code-active: #23304d;
+    --tok-keyword: #e48bc6;
+    --tok-literal: #7fd1a4;
   }
 }
 
@@ -40,7 +48,7 @@ body {
   font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
-main { max-width: 880px; margin: 0 auto; padding: 24px 16px 48px; }
+main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 48px; }
 
 h1 { margin: 0; font-size: 1.6rem; }
 .subtitle { margin: 4px 0 16px; color: var(--muted); }
@@ -108,6 +116,31 @@ button.primary { background: var(--accent); border-color: var(--accent); color: 
 .complexity { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0; }
 .complexity dt { color: var(--muted); font-size: 0.8rem; }
 .complexity dd { margin: 0; font-family: ui-monospace, Menlo, monospace; }
+
+.workspace { display: grid; gap: 20px; }
+@media (min-width: 960px) {
+  .workspace { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
+}
+
+.step-message {
+  margin: 0 0 10px; padding: 10px 12px; min-height: 3.6em;
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 6px;
+}
+
+.code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.code-title {
+  padding: 6px 12px; font-size: 0.8rem; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.code pre { margin: 0; padding: 8px 0; overflow-x: auto; font: 13px/1.6 ui-monospace, Menlo, monospace; }
+.code-line { display: flex; padding-right: 12px; border-left: 3px solid transparent; }
+.code-line.active { background: var(--code-active); border-left-color: var(--accent); }
+.line-number { flex: none; width: 2.5em; padding-right: 12px; text-align: right; color: var(--muted); opacity: 0.6; user-select: none; }
+.code-line code { white-space: pre; font: inherit; }
+.tok-keyword { color: var(--tok-keyword); }
+.tok-comment { color: var(--muted); font-style: italic; }
+.tok-number, .tok-string { color: var(--tok-literal); }
 
 @media (max-width: 520px) {
   .complexity { grid-template-columns: repeat(2, 1fr); }

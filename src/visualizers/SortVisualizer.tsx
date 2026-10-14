@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { sortingAlgorithms } from '../algorithms/sorting';
+import { CodePanel } from './CodePanel';
 import { ComplexityCard, PlaybackControls } from './Controls';
 import { usePlayer } from './usePlayer';
 
@@ -27,29 +28,40 @@ export function SortVisualizer() {
 
   return (
     <section>
-      <div className="toolbar">
-        <select value={algorithmId} onChange={(e) => setAlgorithmId(e.target.value)}>
-          {sortingAlgorithms.map((a) => (
-            <option key={a.id} value={a.id}>{a.name}</option>
-          ))}
-        </select>
-        <button onClick={() => setInput(randomArray())}>New array</button>
+      <div className="workspace">
+        <div className="visual">
+          <div className="toolbar">
+            <select value={algorithmId} onChange={(e) => setAlgorithmId(e.target.value)}>
+              {sortingAlgorithms.map((a) => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
+            <button onClick={() => setInput(randomArray())}>New array</button>
+          </div>
+
+          <div className="bars" role="img" aria-label={`Array: ${array.join(', ')}`}>
+            {array.map((value, i) => (
+              <div key={i} className={barClass(i)} style={{ height: `${value}%` }} />
+            ))}
+          </div>
+
+          <ul className="legend">
+            <li><span className="swatch compare" />Comparing</li>
+            <li><span className="swatch swap" />Swapped</li>
+            <li><span className="swatch pivot" />Pivot</li>
+            <li><span className="swatch sorted" />In final place</li>
+          </ul>
+
+          <PlaybackControls player={player} speed={speed} onSpeed={setSpeed} />
+        </div>
+
+        <CodePanel
+          source={algorithm.source}
+          line={player.step.line}
+          message={player.step.message}
+          title={`${algorithm.name} in TypeScript`}
+        />
       </div>
-
-      <div className="bars" role="img" aria-label={`Array: ${array.join(', ')}`}>
-        {array.map((value, i) => (
-          <div key={i} className={barClass(i)} style={{ height: `${value}%` }} />
-        ))}
-      </div>
-
-      <ul className="legend">
-        <li><span className="swatch compare" />Comparing</li>
-        <li><span className="swatch swap" />Swapped</li>
-        <li><span className="swatch pivot" />Pivot</li>
-        <li><span className="swatch sorted" />In final place</li>
-      </ul>
-
-      <PlaybackControls player={player} speed={speed} onSpeed={setSpeed} />
       <ComplexityCard algorithm={algorithm} />
     </section>
   );

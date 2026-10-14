@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { graphAlgorithms } from '../algorithms/graphs';
 import type { Grid } from '../algorithms/types';
+import { CodePanel } from './CodePanel';
 import { ComplexityCard, PlaybackControls } from './Controls';
 import { usePlayer } from './usePlayer';
 
@@ -58,39 +59,50 @@ export function GridVisualizer() {
 
   return (
     <section>
-      <div className="toolbar">
-        <select value={algorithmId} onChange={(e) => setAlgorithmId(e.target.value)}>
-          {graphAlgorithms.map((a) => (
-            <option key={a.id} value={a.id}>{a.name}</option>
-          ))}
-        </select>
-        <button onClick={() => setWalls(randomWalls())}>New maze</button>
-        <button onClick={() => setWalls(new Set())}>Clear walls</button>
+      <div className="workspace">
+        <div className="visual">
+          <div className="toolbar">
+            <select value={algorithmId} onChange={(e) => setAlgorithmId(e.target.value)}>
+              {graphAlgorithms.map((a) => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
+            <button onClick={() => setWalls(randomWalls())}>New maze</button>
+            <button onClick={() => setWalls(new Set())}>Clear walls</button>
+          </div>
+
+          <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
+            {Array.from({ length: ROWS * COLS }, (_, cell) => (
+              <button
+                key={cell}
+                className={cellClass(cell)}
+                onClick={() => toggleWall(cell)}
+                aria-label={`Cell (${Math.floor(cell / COLS)}, ${cell % COLS})`}
+              />
+            ))}
+          </div>
+          <p className="hint">
+            {noPath ? 'No path: the goal is walled off.' : 'Click a cell to add or remove a wall.'}
+          </p>
+
+          <ul className="legend">
+            <li><span className="swatch start" />Start</li>
+            <li><span className="swatch goal" />Goal</li>
+            <li><span className="swatch frontier" />In queue</li>
+            <li><span className="swatch visited" />Visited</li>
+            <li><span className="swatch path" />Shortest path</li>
+          </ul>
+
+          <PlaybackControls player={player} speed={speed} onSpeed={setSpeed} />
+        </div>
+
+        <CodePanel
+          source={algorithm.source}
+          line={player.step.line}
+          message={player.step.message}
+          title={`${algorithm.name} in TypeScript`}
+        />
       </div>
-
-      <div className="grid" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
-        {Array.from({ length: ROWS * COLS }, (_, cell) => (
-          <button
-            key={cell}
-            className={cellClass(cell)}
-            onClick={() => toggleWall(cell)}
-            aria-label={`Row ${Math.floor(cell / COLS) + 1}, column ${(cell % COLS) + 1}`}
-          />
-        ))}
-      </div>
-      <p className="hint">
-        {noPath ? 'No path: the goal is walled off.' : 'Click a cell to add or remove a wall.'}
-      </p>
-
-      <ul className="legend">
-        <li><span className="swatch start" />Start</li>
-        <li><span className="swatch goal" />Goal</li>
-        <li><span className="swatch frontier" />In queue</li>
-        <li><span className="swatch visited" />Visited</li>
-        <li><span className="swatch path" />Shortest path</li>
-      </ul>
-
-      <PlaybackControls player={player} speed={speed} onSpeed={setSpeed} />
       <ComplexityCard algorithm={algorithm} />
     </section>
   );

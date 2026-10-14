@@ -11,16 +11,30 @@ export interface Complexity {
   space: string;
 }
 
-export interface AlgorithmInfo<Fn> {
+export interface AlgorithmInfo<Run, Plain = unknown> {
   id: string;
   name: string;
   description: string;
   complexity: Complexity;
-  run: Fn;
+  /** The instrumented generator that drives the animation. */
+  run: Run;
+  /** The same algorithm written plainly, as you would in an interview. */
+  reference: Plain;
+  /** Source of the plain version, shown in the code panel. */
+  source: string;
+}
+
+/**
+ * Every step names the line of the plain example it corresponds to, via a
+ * `// @step <line>` marker in that file, and says in words what happened.
+ */
+export interface StepMeta {
+  line: string;
+  message: string;
 }
 
 /** One frame of a sorting algorithm. Indices refer to positions in `array`. */
-export interface SortStep {
+export interface SortStep extends StepMeta {
   array: number[];
   /** Two positions being compared right now. */
   compare?: [number, number];
@@ -43,7 +57,7 @@ export interface Grid {
 }
 
 /** One frame of a graph search. */
-export interface GraphStep {
+export interface GraphStep extends StepMeta {
   current: number | null;
   visited: number[];
   frontier: number[];
