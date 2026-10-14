@@ -48,7 +48,10 @@ export function StructureVisualizer() {
     const op = structure.operations.find((o) => o.id === opId)!;
     const out = apply(op, state, value);
     setStates({ ...states, [structureId]: out.state });
-    setSteps(out.steps);
+    // Start every animation on the state before the call, so even a one step
+    // operation like push has a before and an after to play and replay.
+    const call = `${op.method ?? op.id}(${op.takesValue ? value : ''})`;
+    setSteps([{ state, marks: [], line: '', message: `Calling ${call}. This is the ${structure.name.toLowerCase()} before it runs.` }, ...out.steps]);
     if (op.grows) setValue(randomValue());
   };
 

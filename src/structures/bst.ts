@@ -144,6 +144,6 @@ export const bst: StructureInfo<TreeState> = {
   operations: [
     insertOp,
     { id: 'contains', label: 'Search', takesValue: true, complexity: 'O(log n) average, O(n) worst', run: contains },
-    { id: 'in-order', label: 'Walk in order', takesValue: false, complexity: 'O(n)', run: inOrder },
+    { id: 'in-order', label: 'Walk in order', method: 'inOrder', takesValue: false, complexity: 'O(n)', run: inOrder },
   ],
 };

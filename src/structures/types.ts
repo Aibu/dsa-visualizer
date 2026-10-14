@@ -28,6 +28,8 @@ export type OpRun<S> = Generator<StructureStep<S>, OpResult<S>>;
 export interface Operation<S> {
   id: string;
   label: string;
+  /** Method name in the example class, when it differs from `id`. */
+  method?: string;
   takesValue: boolean;
   /** True when the operation can make the structure bigger. */
   grows?: boolean;

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
  */
 export function usePlayer<T>(steps: T[], speedMs: number, autoPlay = false) {
   const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(autoPlay && steps.length > 1);
+  const [wantsToPlay, setWantsToPlay] = useState(autoPlay);
   const [seen, setSeen] = useState(steps);
 
   // New steps (new input or new algorithm) means start over. This happens
@@ -15,25 +15,20 @@ export function usePlayer<T>(steps: T[], speedMs: number, autoPlay = false) {
   if (steps !== seen) {
     setSeen(steps);
     setIndex(0);
-    setPlaying(autoPlay && steps.length > 1);
+    setWantsToPlay(autoPlay);
   }
+
   const current = Math.min(index, steps.length - 1);
+  const atEnd = current >= steps.length - 1;
+  // Derived, not stored: the moment the last frame shows, playback is over.
+  // Storing it let the button say Pause for a whole extra tick at the end.
+  const playing = wantsToPlay && !atEnd;
 
   useEffect(() => {
     if (!playing) return;
-    const id = setInterval(() => {
-      setIndex((i) => {
-        if (i >= steps.length - 1) {
-          setPlaying(false);
-          return i;
-        }
-        return i + 1;
-      });
-    }, speedMs);
-    return () => clearInterval(id);
-  }, [playing, speedMs, steps.length]);
-
-  const atEnd = current >= steps.length - 1;
+    const id = setTimeout(() => setIndex((i) => i + 1), speedMs);
+    return () => clearTimeout(id);
+  }, [playing, current, speedMs]);
 
   return {
     step: steps[current],
@@ -42,13 +37,25 @@ export function usePlayer<T>(steps: T[], speedMs: number, autoPlay = false) {
     playing,
     atEnd,
     toggle: () => {
-      if (atEnd) setIndex(0);
-      setPlaying((p) => !p);
+      if (atEnd) {
+        setIndex(0);
+        setWantsToPlay(true);
+      } else {
+        setWantsToPlay(!playing);
+      }
     },
-    forward: () => setIndex((i) => Math.min(i + 1, steps.length - 1)),
-    back: () => setIndex((i) => Math.max(i - 1, 0)),
+    // Stepping by hand pauses, otherwise stepping back from the end would
+    // quietly start playing again.
+    forward: () => {
+      setWantsToPlay(false);
+      setIndex(Math.min(current + 1, steps.length - 1));
+    },
+    back: () => {
+      setWantsToPlay(false);
+      setIndex(Math.max(current - 1, 0));
+    },
     reset: () => {
-      setPlaying(false);
+      setWantsToPlay(false);
       setIndex(0);
     },
   };
