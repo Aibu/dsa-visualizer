@@ -1,0 +1,115 @@
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --text: #1c1c1e;
+  --muted: #6b6b70;
+  --border: #e2e2e0;
+  --accent: #3b6fe0;
+  --bar: #b8c2d6;
+  --compare: #f2a93b;
+  --swap: #e5484d;
+  --pivot: #8e4ec6;
+  --sorted: #30a46c;
+  --visited: #c7dbff;
+  --frontier: #7fa6f0;
+  --path: #f2c94c;
+  --wall: #2b2b30;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131315;
+    --surface: #1c1c1f;
+    --text: #ededef;
+    --muted: #9a9aa0;
+    --border: #2e2e33;
+    --bar: #4a5468;
+    --visited: #22345a;
+    --frontier: #3d63b0;
+    --wall: #d0d0d6;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+main { max-width: 880px; margin: 0 auto; padding: 24px 16px 48px; }
+
+h1 { margin: 0; font-size: 1.6rem; }
+.subtitle { margin: 4px 0 16px; color: var(--muted); }
+
+nav { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  border-radius: 0; padding: 8px 12px; color: var(--muted);
+}
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+button, select {
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+}
+button:disabled { opacity: 0.4; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; min-width: 80px; }
+
+.toolbar, .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.controls { margin-top: 12px; }
+.speed { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.counter { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.bars {
+  display: flex; align-items: flex-end; gap: 2px; height: 260px;
+  padding: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+}
+.bar { flex: 1; background: var(--bar); border-radius: 2px 2px 0 0; transition: height 80ms; }
+.bar.compare { background: var(--compare); }
+.bar.swap { background: var(--swap); }
+.bar.pivot { background: var(--pivot); }
+.bar.sorted { background: var(--sorted); }
+
+.grid {
+  display: grid; gap: 1px; padding: 1px;
+  background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.cell { aspect-ratio: 1; padding: 0; border: none; border-radius: 0; background: var(--surface); }
+.cell.wall { background: var(--wall); }
+.cell.visited { background: var(--visited); }
+.cell.frontier { background: var(--frontier); }
+.cell.current { background: var(--compare); }
+.cell.path { background: var(--path); }
+.cell.start { background: var(--sorted); }
+.cell.goal { background: var(--swap); }
+
+.hint { margin: 8px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; list-style: none; padding: 0; margin: 10px 0 0; color: var(--muted); font-size: 0.9rem; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.swatch.compare { background: var(--compare); }
+.swatch.swap, .swatch.goal { background: var(--swap); }
+.swatch.pivot { background: var(--pivot); }
+.swatch.sorted, .swatch.start { background: var(--sorted); }
+.swatch.visited { background: var(--visited); }
+.swatch.frontier { background: var(--frontier); }
+.swatch.path { background: var(--path); }
+
+.card {
+  margin-top: 20px; padding: 16px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.card p { margin: 0 0 12px; }
+.complexity { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0; }
+.complexity dt { color: var(--muted); font-size: 0.8rem; }
+.complexity dd { margin: 0; font-family: ui-monospace, Menlo, monospace; }
+
+@media (max-width: 520px) {
+  .complexity { grid-template-columns: repeat(2, 1fr); }
+  .bars { height: 200px; }
+}
