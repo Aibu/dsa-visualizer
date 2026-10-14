@@ -22,8 +22,9 @@ export function PlaybackControls({ player, speed, onSpeed }: Props) {
       <button onClick={player.back} disabled={player.index === 0} aria-label="Step back">
         ◀
       </button>
-      <button className="primary" onClick={player.toggle}>
-        {player.playing ? 'Pause' : player.atEnd ? 'Replay' : 'Play'}
+      {/* A single frame (nothing run yet) has nothing to play or replay. */}
+      <button className="primary" onClick={player.toggle} disabled={player.total <= 1}>
+        {player.playing ? 'Pause' : player.atEnd && player.total > 1 ? 'Replay' : 'Play'}
       </button>
       <button onClick={player.forward} disabled={player.atEnd} aria-label="Step forward">
         ▶
