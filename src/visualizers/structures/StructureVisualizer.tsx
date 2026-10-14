@@ -4,7 +4,7 @@ import { apply, type StructureStep } from '../../structures/types';
 import { CodePanel } from '../CodePanel';
 import { PlaybackControls } from '../Controls';
 import { usePlayer } from '../usePlayer';
-import { ListView, QueueView, StackView, TreeView, type ViewProps } from './views';
+import { HashSetView, HeapView, ListView, QueueView, StackView, TreeView, type ViewProps } from './views';
 
 // Each view is typed for its own state; the lookup by id cannot know which.
 const views: Record<string, ComponentType<ViewProps<any>>> = {
@@ -12,6 +12,8 @@ const views: Record<string, ComponentType<ViewProps<any>>> = {
   queue: QueueView,
   'linked-list': ListView,
   bst: TreeView,
+  heap: HeapView,
+  'hash-set': HashSetView,
 };
 
 const randomValue = () => 1 + Math.floor(Math.random() * 99);

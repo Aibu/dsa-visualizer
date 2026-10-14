@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { parseSource } from '../algorithms/source';
 import { bst, type TreeState } from './bst';
+import { hashSet, type HashSetState } from './hashSet';
+import { HashSet } from './hashSet.example';
+import { heap, type HeapState } from './heap';
+import { MinHeap } from './heap.example';
 import { BinarySearchTree } from './bst.example';
 import { structures } from '.';
 import { linkedList, type ListState } from './linkedList';
@@ -26,6 +30,14 @@ const scripts: Record<string, [string, number][]> = {
   bst: [
     ['insert', 50], ['insert', 30], ['insert', 70], ['insert', 40], ['insert', 60], ['insert', 50],
     ['contains', 40], ['contains', 65], ['in-order', 0],
+  ],
+  heap: [
+    ['pop', 0], ['push', 5], ['pop', 0], ['push', 30], ['push', 20], ['push', 10], ['push', 40],
+    ['peek', 0], ['pop', 0],
+  ],
+  'hash-set': [
+    ['has', 3], ['delete', 3], ['add', 1], ['add', 5], ['add', 1], ['add', 2], ['add', 3],
+    ['has', 5], ['delete', 5],
   ],
 };
 
@@ -116,5 +128,38 @@ describe('animated and plain versions agree', () => {
     // In order is sorted order, which is the whole point of a search tree.
     const values = plain.inOrder();
     expect(values).toEqual([...values].sort((a, b) => a - b));
+  });
+
+  it('min heap', () => {
+    const plain = new MinHeap();
+    let state: HeapState = heap.empty;
+    for (let n = 0; n < 300; n++) {
+      const id = Math.random() < 0.55 ? 'push' : ['pop', 'peek'][randomInt(2)];
+      const value = randomInt(50);
+      const out = apply(op(heap, id), state, value);
+      const expected = id === 'push' ? plain.push(value) : id === 'pop' ? plain.pop() : plain.peek();
+      expect(out.result).toEqual(expected);
+      expect(out.state.items).toEqual(plain.toArray());
+      state = out.state;
+    }
+    // Popping everything out gives sorted order, which is heap sort.
+    const drained: number[] = [];
+    for (let v = plain.pop(); v !== undefined; v = plain.pop()) drained.push(v);
+    expect(drained).toEqual([...drained].sort((a, b) => a - b));
+  });
+
+  it('hash set', () => {
+    const plain = new HashSet();
+    let state: HashSetState = hashSet.empty;
+    for (let n = 0; n < 300; n++) {
+      const id = ['add', 'add', 'has', 'delete'][randomInt(4)];
+      const value = randomInt(40);
+      const out = apply(op(hashSet, id), state, value);
+      if (id === 'add') plain.add(value);
+      if (id === 'has') expect(out.result).toBe(plain.has(value));
+      if (id === 'delete') expect(out.result).toBe(plain.delete(value));
+      expect(out.state.buckets).toEqual(plain.toArray());
+      state = out.state;
+    }
   });
 });

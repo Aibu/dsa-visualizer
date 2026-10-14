@@ -203,3 +203,15 @@ button.primary { background: var(--accent); border-color: var(--accent); color: 
 .tree-node.look circle { stroke: var(--compare); fill: color-mix(in srgb, var(--compare) 30%, var(--bg)); }
 .tree-node.add circle { stroke: var(--sorted); fill: color-mix(in srgb, var(--sorted) 30%, var(--bg)); }
 .tree-node.done circle { stroke: var(--path); fill: color-mix(in srgb, var(--path) 30%, var(--bg)); }
+
+.heap-view { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+.heap-array { flex-wrap: wrap; justify-content: center; }
+
+.hash-view { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 460px; }
+.bucket {
+  display: flex; align-items: center; gap: 6px; min-height: 46px; padding: 4px 8px;
+  border: 1px solid var(--border); border-radius: 6px; transition: background 150ms, border-color 150ms;
+}
+.bucket.look { border-color: var(--compare); background: color-mix(in srgb, var(--compare) 12%, transparent); }
+.bucket-index { width: 2em; color: var(--muted); font: 0.8rem ui-monospace, Menlo, monospace; }
+.bucket .box { padding: 6px 10px; min-width: 40px; }

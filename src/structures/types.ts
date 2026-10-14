@@ -9,6 +9,8 @@ export type Tone = 'look' | 'add' | 'remove' | 'done';
  */
 export interface Mark {
   at: number;
+  /** For the hash set: which value inside bucket `at`. Without it, the whole bucket. */
+  entry?: number;
   tone: Tone;
 }
 

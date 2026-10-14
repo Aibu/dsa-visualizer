@@ -38,6 +38,11 @@ export function CodePanel({ source, line, message, title }: Props) {
   const first = markers.get(line)?.[0];
   const preRef = useRef<HTMLPreElement>(null);
 
+  // A different example starts at its first line, not wherever the last one was.
+  useEffect(() => {
+    preRef.current?.scrollTo({ top: 0 });
+  }, [source]);
+
   // Keep the running line in view when the example is taller than the panel.
   // Scrolls only the panel, never the page.
   useEffect(() => {

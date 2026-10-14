@@ -27,10 +27,12 @@ The two versions cannot quietly drift apart. The tests run both against the same
 | Queue | enqueue, dequeue, including the compaction that keeps dequeue O(1) on average |
 | Linked list | prepend, append, find, remove |
 | Binary search tree | insert, search, walk in order |
+| Min heap | push, pop smallest, peek, drawn both as a tree and as the array it really is |
+| Hash set | add, has, delete, including the resize that rehashes everything |
 
 On the structures tab you pick an operation and a value, and watch it run against whatever is already there, so you can build up a tree yourself and see why sorted input turns it into a list.
 
-More are on the way: bubble, insertion, merge and heap sort, binary search, depth first search, Dijkstra, a heap and a hash table.
+More algorithms are on the way: bubble, insertion, merge and heap sort, binary search, depth first search and Dijkstra.
 
 ## Running it
 

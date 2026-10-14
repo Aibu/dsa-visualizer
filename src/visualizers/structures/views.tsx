@@ -1,4 +1,6 @@
 import type { TreeNode, TreeState } from '../../structures/bst';
+import type { HashSetState } from '../../structures/hashSet';
+import type { HeapState } from '../../structures/heap';
 import type { ListState } from '../../structures/linkedList';
 import type { QueueState } from '../../structures/queue';
 import type { StackState } from '../../structures/stack';
@@ -113,5 +115,79 @@ export function TreeView({ state, marks }: ViewProps<TreeState>) {
         </g>
       ))}
     </svg>
+  );
+}
+
+/** The heap is one array, so draw it twice: as the tree it encodes and as the array itself. */
+export function HeapView({ state, marks }: ViewProps<HeapState>) {
+  const tone = toneOf(marks);
+  const { items } = state;
+  if (items.length === 0) return <Empty label="Empty heap" />;
+
+  const levels = Math.floor(Math.log2(items.length)) + 1;
+  const width = 2 ** (levels - 1) * SPACING_X;
+  const pos = (i: number) => {
+    const level = Math.floor(Math.log2(i + 1));
+    const slot = i + 1 - 2 ** level;
+    return { x: ((slot + 0.5) * width) / 2 ** level, y: level * SPACING_Y + RADIUS + 6 };
+  };
+  const height = (levels - 1) * SPACING_Y + 2 * RADIUS + 12;
+
+  return (
+    <div className="heap-view">
+      <svg className="tree-view" viewBox={`0 0 ${width} ${height}`} style={{ maxWidth: width * 1.4 }}>
+        {items.map((_, i) => {
+          if (i === 0) return null;
+          const a = pos(Math.floor((i - 1) / 2));
+          const b = pos(i);
+          return <line key={`e${i}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="tree-edge" />;
+        })}
+        {items.map((value, i) => {
+          const p = pos(i);
+          return (
+            <g key={i} className={`tree-node ${tone(i)}`}>
+              <circle cx={p.x} cy={p.y} r={RADIUS} />
+              <text x={p.x} y={p.y} dy="0.35em" textAnchor="middle">{value}</text>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="queue-view heap-array" aria-label="The same heap as an array">
+        {items.map((value, i) => (
+          <div key={i} className="slot">
+            <div className={`box ${tone(i)}`}>{value}</div>
+            <span className="index">{i}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function HashSetView({ state, marks }: ViewProps<HashSetState>) {
+  const bucketTone = new Map<number, Tone>();
+  const entryTone = new Map<string, Tone>();
+  for (const m of marks) {
+    if (m.entry === undefined) bucketTone.set(m.at, m.tone);
+    else entryTone.set(`${m.at}:${m.entry}`, m.tone);
+  }
+  return (
+    <div className="hash-view">
+      {state.buckets.map((bucket, b) => (
+        <div key={b} className={`bucket ${bucketTone.get(b) ?? ''}`}>
+          <span className="bucket-index">{b}</span>
+          {bucket.length === 0 ? (
+            <span className="null">empty</span>
+          ) : (
+            bucket.map((value, i) => (
+              <div key={i} className="list-link">
+                {i > 0 && <span className="arrow">→</span>}
+                <div className={`box ${entryTone.get(`${b}:${i}`) ?? ''}`}>{value}</div>
+              </div>
+            ))
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
